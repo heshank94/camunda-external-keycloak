@@ -1,0 +1,54 @@
+services:
+  postgres: # PostgreSQL Database
+    container_name: postgres
+    image: postgres:${POSTGRES_VERSION}
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    restart: on-failure
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - identity-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  keycloak: # Keycloak Server
+    container_name: keycloak
+    image: bitnamilegacy/keycloak:${KEYCLOAK_SERVER_VERSION}
+    ports:
+      - "18080:18080"
+    environment:
+      KEYCLOAK_HTTP_PORT: 18080
+      KEYCLOAK_HTTP_RELATIVE_PATH: /auth
+      KEYCLOAK_DATABASE_HOST: postgres
+      KEYCLOAK_DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+      KEYCLOAK_ADMIN_USER: ${KEYCLOAK_ADMIN_USER}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:18080/auth"]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 30s
+    networks:
+      - identity-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres:
+
+networks:
+  identity-network:
