@@ -4,8 +4,8 @@ identity:
     multi-tenancy: "false"
 
   authProvider:
-    issuer-url: "http://${HOST}:18080/auth/realms/dreamlink"
-    backend-url: "http://${KEYCLOAK_HOST}:18080/auth/realms/dreamlink"
+    issuer-url: "http://${HOST}:18080/auth/realms/${REALM_NAME}"
+    backend-url: "http://${KEYCLOAK_HOST}:18080/auth/realms/${REALM_NAME}"
 
   component-presets:
     connectors:

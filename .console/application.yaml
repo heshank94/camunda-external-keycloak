@@ -1,13 +1,13 @@
 camunda:
   console:
-    customerId: "dreamlink"
-    installationId: "dreamlink"
+    customerId: "${REALM_NAME}"
+    installationId: "${REALM_NAME}"
     telemetry: "disabled"
     managed:
       method: "plain"
       releases:
-        - name: "dreamlink"
-          namespace: "dreamlink"
+        - name: "${REALM_NAME}"
+          namespace: "${REALM_NAME}"
           # renovate: datasource=docker depName=camunda/camunda
           version: "8.8.0"
           tags:

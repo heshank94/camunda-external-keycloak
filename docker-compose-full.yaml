@@ -13,15 +13,15 @@ services:
       CAMUNDA_SECURITY_AUTHENTICATION_OIDC_AUDIENCES_0: orchestration
       CAMUNDA_SECURITY_AUTHENTICATION_OIDC_AUDIENCES_1: orchestration-api
       CAMUNDA_SECURITY_AUTHENTICATION_OIDC_AUDIENCES_2: web-modeler-api
-      CAMUNDA_SECURITY_AUTHENTICATION_OIDC_AUTHORIZATIONURI: http://${HOST}:18080/auth/realms/dreamlink/protocol/openid-connect/auth
-      CAMUNDA_SECURITY_AUTHENTICATION_OIDC_TOKENURI: http://${KEYCLOAK_HOST}:18080/auth/realms/dreamlink/protocol/openid-connect/token
-      CAMUNDA_SECURITY_AUTHENTICATION_OIDC_JWKSETURI: http://${KEYCLOAK_HOST}:18080/auth/realms/dreamlink/protocol/openid-connect/certs
+      CAMUNDA_SECURITY_AUTHENTICATION_OIDC_AUTHORIZATIONURI: http://${HOST}:18080/auth/realms/${REALM_NAME}/protocol/openid-connect/auth
+      CAMUNDA_SECURITY_AUTHENTICATION_OIDC_TOKENURI: http://${KEYCLOAK_HOST}:18080/auth/realms/${REALM_NAME}/protocol/openid-connect/token
+      CAMUNDA_SECURITY_AUTHENTICATION_OIDC_JWKSETURI: http://${KEYCLOAK_HOST}:18080/auth/realms/${REALM_NAME}/protocol/openid-connect/certs
       CAMUNDA_SECURITY_AUTHENTICATION_OIDC_REDIRECTURI: http://${HOST}:8088/sso-callback
       CAMUNDA_SECURITY_AUTHENTICATION_OIDC_USERNAMECLAIM: preferred_username
       CAMUNDA_SECURITY_AUTHENTICATION_OIDC_CLIENTIDCLAIM: client_id
-      ZEEBE_BROKER_GATEWAY_SECURITY_AUTHENTICATION_IDENTITY_ISSUERBACKENDURL: http://${KEYCLOAK_HOST}:18080/auth/realms/dreamlink
+      ZEEBE_BROKER_GATEWAY_SECURITY_AUTHENTICATION_IDENTITY_ISSUERBACKENDURL: http://${KEYCLOAK_HOST}:18080/auth/realms/${REALM_NAME}
       # Identity integration
-      CAMUNDA_IDENTITY_ISSUERBACKENDURL: http://${KEYCLOAK_HOST}:18080/auth/realms/dreamlink
+      CAMUNDA_IDENTITY_ISSUERBACKENDURL: http://${KEYCLOAK_HOST}:18080/auth/realms/${REALM_NAME}
       CAMUNDA_IDENTITY_BASEURL: http://identity:8084
       CAMUNDA_IDENTITY_AUDIENCE: orchestration-api
       # Resource limits
@@ -60,7 +60,7 @@ services:
       # Orchestration connection - service addresses and credentials
       CAMUNDA_CLIENT_RESTADDRESS: http://orchestration:8080
       CAMUNDA_CLIENT_GRPCADDRESS: http://orchestration:26500
-      CAMUNDA_CLIENT_AUTH_TOKENURL: http://${KEYCLOAK_HOST}:18080/auth/realms/dreamlink/protocol/openid-connect/token
+      CAMUNDA_CLIENT_AUTH_TOKENURL: http://${KEYCLOAK_HOST}:18080/auth/realms/${REALM_NAME}/protocol/openid-connect/token
       CAMUNDA_CLIENT_AUTH_CLIENTID: ${CONNECTORS_CLIENT_ID}
       CAMUNDA_CLIENT_AUTH_CLIENTSECRET: ${CONNECTORS_CLIENT_SECRET}
     env_file: connector-secrets.txt
@@ -96,8 +96,8 @@ services:
       OPTIMIZE_ELASTICSEARCH_HTTP_PORT: "9200"
       SPRING_PROFILES_ACTIVE: ccsm
       # Identity integration - URLs and credentials
-      CAMUNDA_OPTIMIZE_IDENTITY_ISSUER_URL: http://${HOST}:18080/auth/realms/dreamlink
-      CAMUNDA_OPTIMIZE_IDENTITY_ISSUER_BACKEND_URL: http://${KEYCLOAK_HOST}:18080/auth/realms/dreamlink
+      CAMUNDA_OPTIMIZE_IDENTITY_ISSUER_URL: http://${HOST}:18080/auth/realms/${REALM_NAME}
+      CAMUNDA_OPTIMIZE_IDENTITY_ISSUER_BACKEND_URL: http://${KEYCLOAK_HOST}:18080/auth/realms/${REALM_NAME}
       CAMUNDA_OPTIMIZE_IDENTITY_CLIENTID: optimize
       CAMUNDA_OPTIMIZE_IDENTITY_CLIENTSECRET: ${OPTIMIZE_CLIENT_SECRET}
       CAMUNDA_OPTIMIZE_IDENTITY_AUDIENCE: optimize-api
@@ -158,7 +158,7 @@ services:
       MANAGEMENT_ENDPOINT_CONFIGPROPS_SHOW_VALUES: ALWAYS
 
       # TODO - added
-      KEYCLOAK_REALM: dreamlink
+      KEYCLOAK_REALM: ${REALM_NAME}
 
     healthcheck:
       test:
@@ -358,8 +358,8 @@ services:
       RESTAPI_PUSHER_APP_ID: ${WEBMODELER_PUSHER_APP_ID}
       RESTAPI_PUSHER_KEY: ${WEBMODELER_PUSHER_KEY}
       RESTAPI_PUSHER_SECRET: ${WEBMODELER_PUSHER_SECRET}
-      RESTAPI_OAUTH2_TOKEN_ISSUER: http://${HOST}:18080/auth/realms/dreamlink
-      RESTAPI_OAUTH2_TOKEN_ISSUER_BACKEND_URL: http://${KEYCLOAK_HOST}:18080/auth/realms/dreamlink
+      RESTAPI_OAUTH2_TOKEN_ISSUER: http://${HOST}:18080/auth/realms/${REALM_NAME}
+      RESTAPI_OAUTH2_TOKEN_ISSUER_BACKEND_URL: http://${KEYCLOAK_HOST}:18080/auth/realms/${REALM_NAME}
       RESTAPI_SERVER_URL: http://localhost:8070
       RESTAPI_MAIL_HOST: mailpit
       RESTAPI_MAIL_PORT: 1025
@@ -419,9 +419,9 @@ services:
       CLIENT_PUSHER_FORCE_TLS: "false"
       CLIENT_PUSHER_KEY: ${WEBMODELER_PUSHER_KEY}
       OAUTH2_CLIENT_ID: web-modeler
-      OAUTH2_JWKS_URL: http://${KEYCLOAK_HOST}:18080/auth/realms/dreamlink/protocol/openid-connect/certs
+      OAUTH2_JWKS_URL: http://${KEYCLOAK_HOST}:18080/auth/realms/${REALM_NAME}/protocol/openid-connect/certs
       OAUTH2_TOKEN_AUDIENCE: web-modeler-api
-      OAUTH2_TOKEN_ISSUER: http://${HOST}:18080/auth/realms/dreamlink
+      OAUTH2_TOKEN_ISSUER: http://${HOST}:18080/auth/realms/${REALM_NAME}
       IDENTITY_BASE_URL: http://identity:8084/
       PLAY_ENABLED: "true"
     networks:
@@ -471,7 +471,7 @@ services:
       NODE_ENV: production
       KEYCLOAK_BASE_URL: http://${HOST}:18080/auth
       KEYCLOAK_INTERNAL_BASE_URL: http://${KEYCLOAK_HOST}:18080/auth
-      KEYCLOAK_REALM: dreamlink
+      KEYCLOAK_REALM: ${REALM_NAME}
       CAMUNDA_IDENTITY_CLIENT_ID: console
       CAMUNDA_IDENTITY_AUDIENCE: console
       JAVA_TOOL_OPTIONS: -Xms512m -Xmx1g
