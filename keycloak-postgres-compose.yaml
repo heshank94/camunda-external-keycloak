@@ -14,7 +14,7 @@ services:
       retries: 5
       start_period: 10s
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql
     networks:
       - identity-network
     extra_hosts:
@@ -28,10 +28,17 @@ services:
     environment:
       KEYCLOAK_HTTP_PORT: 18080
       KEYCLOAK_HTTP_RELATIVE_PATH: /auth
+
       KEYCLOAK_DATABASE_HOST: postgres
+      KEYCLOAK_DATABASE_NAME: ${POSTGRES_DB}
+      KEYCLOAK_DATABASE_USER: ${POSTGRES_USER}
       KEYCLOAK_DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
-      KEYCLOAK_ADMIN_USER: ${KEYCLOAK_ADMIN_USER}
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+
+      KEYCLOAK_ADMIN_USER: ${KC_BOOTSTRAP_ADMIN_USERNAME}
+      KEYCLOAK_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
+
+      KEYCLOAK_IMPORT: /opt/bitnami/keycloak/data/import/dreamlink-realm.json
+
     restart: on-failure
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:18080/auth"]
@@ -39,6 +46,11 @@ services:
       timeout: 15s
       retries: 5
       start_period: 30s
+
+    volumes:
+      - keycloak_data:/opt/bitnami/keycloak
+      - ./keycloak-import/dreamlink-realm.json:/opt/bitnami/keycloak/data/import/dreamlink-realm.json
+      
     networks:
       - identity-network
     extra_hosts:
@@ -48,7 +60,8 @@ services:
         condition: service_healthy
 
 volumes:
-  postgres:
+  keycloak_data:
+  pg_data:
 
 networks:
   identity-network:

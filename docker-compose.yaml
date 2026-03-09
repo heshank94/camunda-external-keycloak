@@ -1,5 +1,5 @@
 
 include:
-  - path: ./keycloak-postgres.yaml
+  - path: ./keycloak-postgres-compose.yaml
 
-  # - path: ./camunda-full-custom-keycloak.yaml
+  # - path: ./camunda-compose.yaml
