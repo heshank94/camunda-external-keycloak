@@ -36,9 +36,8 @@ services:
 
       KEYCLOAK_ADMIN_USER: ${KC_BOOTSTRAP_ADMIN_USERNAME}
       KEYCLOAK_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
-
-      KEYCLOAK_IMPORT: /opt/bitnami/keycloak/data/import/dreamlink-realm.json
-
+      KEYCLOAK_EXTRA_ARGS: "--import-realm"
+      
     restart: on-failure
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:18080/auth"]
@@ -49,7 +48,7 @@ services:
 
     volumes:
       - keycloak_data:/opt/bitnami/keycloak
-      - ./keycloak-import/dreamlink-realm.json:/opt/bitnami/keycloak/data/import/dreamlink-realm.json
+      - ./keycloak-import:/opt/bitnami/keycloak/data/import
       
     networks:
       - identity-network
